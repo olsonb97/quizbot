@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Results{% endblock %}
+
+{% block header_title %}Quiz Results{% endblock %}
+
+{% block header_content %}
+<p>{{ topic }} - {{ difficulty|capitalize }} Difficulty</p>
+{% if finished_early %}
+<div class="early-finish-notice">
+    <p>Quiz finished early: Answered {{ answered }} of {{ total }} questions</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="results-container">
+    <div class="score-display">
+        <div class="score-circle" data-score="{{ percentage }}">
+            <span class="score-text">{{ score }}/{{ answered }}</span>
+            <span class="score-percent">{{ percentage|round(1) }}%</span>
+        </div>
+        
+        <div class="score-message">
+            {% if percentage >= 80 %}
+                <h2>Excellent!</h2>
+                <p>You have a great understanding of this topic!</p>
+            {% elif percentage >= 60 %}
+                <h2>Good job!</h2>
+                <p>You know quite a bit about this topic.</p>
+            {% elif percentage >= 40 %}
+                <h2>Not bad!</h2>
+                <p>There's room for improvement, but you're on the right track.</p>
+            {% else %}
+                <h2>Keep learning!</h2>
+                <p>This topic might need some more study.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <h3>Review Your Answers</h3>
+    <div class="answers-review">
+        {% for item in review %}
+        <div class="review-item {% if item.is_correct %}correct{% else %}incorrect{% endif %}">
+            <div class="review-question">{{ loop.index }}. {{ item.question }}</div>
+            <div class="review-answers">
+                <div class="review-selected">
+                    <strong>Your answer:</strong> {{ item.selected }}
+                    {% if item.is_correct %}
+                    <span class="correct-mark">✓</span>
+                    {% else %}
+                    <span class="incorrect-mark">✗</span>
+                    {% endif %}
+                </div>
+                {% if not item.is_correct %}
+                <div class="review-correct">
+                    <strong>Correct answer:</strong> {{ item.correct }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="action-buttons">
+        <a href="/" class="btn-secondary">New Topic</a>
+        <form action="/generate-quiz" method="post" style="display: inline;">
+            <input type="hidden" name="topic" value="{{ topic }}">
+            <input type="hidden" name="difficulty" value="{{ difficulty }}">
+            <button type="submit" class="btn-primary">Try Again</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Animate the score circle on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const scoreCircle = document.querySelector('.score-circle');
+        const score = parseFloat(scoreCircle.getAttribute('data-score'));
+        
+        // Add a CSS variable to allow animation of the circle
+        scoreCircle.style.setProperty('--score-percent', `${score}%`);
+        
+        // Add the 'animate' class after a small delay
+        setTimeout(() => {
+            scoreCircle.classList.add('animate');
+        }, 300);
+    });
+</script>
+{% endblock %}

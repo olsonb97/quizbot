@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}QuizBot 🤖{% endblock %}
+
+{% block header_content %}
+<p>Test your knowledge with custom quizzes powered by AI</p>
+{% endblock %}
+
+{% block content %}
+<section class="quiz-form">
+    <h2>Create Your Quiz</h2>
+    <form action="/generate-quiz" method="post">
+        <div class="form-group">
+            <label for="topic">What would you like to be quizzed on?</label>
+            <input type="text" id="topic" name="topic" required placeholder="Enter a topic (e.g., History, Science, Python)">
+        </div>
+        
+        <div class="form-group">
+            <label>Select difficulty level:</label>
+            <div class="difficulty-options">
+                <div class="difficulty-option">
+                    <input type="radio" id="easy" name="difficulty" value="easy" required>
+                    <label for="easy">Easy</label>
+                    <p>Basic knowledge questions</p>
+                </div>
+                
+                <div class="difficulty-option">
+                    <input type="radio" id="medium" name="difficulty" value="medium">
+                    <label for="medium">Medium</label>
+                    <p>Moderate complexity questions</p>
+                </div>
+                
+                <div class="difficulty-option">
+                    <input type="radio" id="hard" name="difficulty" value="hard">
+                    <label for="hard">Hard</label>
+                    <p>Challenging, analytical questions</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn-primary">Generate Quiz</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

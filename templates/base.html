@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}QuizBot 🤖{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>{% block header_title %}QuizBot 🤖{% endblock %}</h1>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                <span class="toggle-icon" id="toggle-icon">🌙</span>
+                <span id="toggle-text">Dark Mode</span>
+            </button>
+            {% block header_content %}{% endblock %}
+        </header>
+        
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        
+        <footer>
+            <p>2025 QuizBot | Powered by OpenAI</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Dark mode functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const toggleIcon = document.getElementById('toggle-icon');
+            const toggleText = document.getElementById('toggle-text');
+            
+            // Check for saved theme preference or prefer-color-scheme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || 
+                (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                toggleIcon.textContent = '☀️';
+                toggleText.textContent = 'Light Mode';
+            }
+            
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                if (currentTheme === 'dark') {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    toggleIcon.textContent = '🌙';
+                    toggleText.textContent = 'Dark Mode';
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    toggleIcon.textContent = '☀️';
+                    toggleText.textContent = 'Light Mode';
+                }
+            });
+            
+            // Make entire option div clickable for both question options and difficulty levels
+            const clickableDivs = document.querySelectorAll('.option, .difficulty-option');
+            clickableDivs.forEach(div => {
+                div.addEventListener('click', function() {
+                    // Find the radio input inside this div and check it
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.checked = true;
+                    }
+                });
+            });
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Question{% endblock %}
+
+{% block header_content %}
+<div class="progress-tracker">
+    <div class="progress-bar">
+        <div id="progress-bar-fill" class="progress"></div>
+    </div>
+    <span>Question {{ current_question }} of {{ total_questions }}</span>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="question-container">
+    <h2 class="question-text">{{ question }}</h2>
+    
+    <form action="/submit-answer/{{ session_id }}/{{ question_index }}" method="post">
+        <div class="options-container">
+            {% for option in options %}
+            <div class="option">
+                <input type="radio" id="option{{ loop.index }}" name="answer" value="{{ option }}" required>
+                <label for="option{{ loop.index }}" class="option-label">{{ option }}</label>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group button-group">
+            <button type="submit" class="btn-primary">Submit Answer</button>
+            <a href="/finish-early/{{ session_id }}" class="btn-secondary">Finish Quiz Early</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Set progress bar width using JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const currentQuestion = parseInt("{{ current_question }}");
+        const totalQuestions = parseInt("{{ total_questions }}");
+        const percentComplete = (currentQuestion / totalQuestions) * 100;
+        
+        progressBarFill.style.width = percentComplete + '%';
+        
+        // Make entire option div clickable
+        const optionDivs = document.querySelectorAll('.option');
+        optionDivs.forEach(div => {
+            div.addEventListener('click', function() {
+                // Find the radio input inside this div and check it
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+            });
+        });
+    });
+</script>
+{% endblock %}
